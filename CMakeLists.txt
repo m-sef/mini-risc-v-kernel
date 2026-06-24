@@ -4,6 +4,7 @@ project(kernel LANGUAGES C ASM)
 add_executable(kernel
     src/boot.s
     src/kernel.c
+    src/io.c
 )
 
 target_link_options(kernel PRIVATE "-T${CMAKE_SOURCE_DIR}/linker.ld")

@@ -1,5 +1,5 @@
-.include "../src/io.s"
-.include "../src/context_switch.s"
+#.include "../src/io.s"
+#.include "../src/context_switch.s"
 
 .section .text.init
 .global _start

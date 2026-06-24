@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#include "print.h"
+#include "io.h"
 
 extern void context_switch(uint32_t* old_stack_pointer, uint32_t new_stack_pointer);
 
@@ -22,8 +22,20 @@ int main(void)
     print_string("god@device:~> Mini Kernel v0.0.0\n");
     print_string("usr@device:~> ");
 
-    char ch = read_char();
-    print_char(ch);
+    char ch = 0x00;
+    while (ch != 0x03)
+    {
+        ch = read_char();
+
+        if (ch == 0x0D)
+        {
+            print_string("\nusr@device:~> ");
+            continue;
+        }
+
+        print_char(ch);
+    }
+
     //context_switch(&kernel_stack_pointer, worker_stack_pointer);
     //print_string("main: ...back from task. done\n");
 
