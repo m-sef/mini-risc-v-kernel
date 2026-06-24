@@ -7,3 +7,4 @@ add_executable(kernel
 )
 
 target_link_options(kernel PRIVATE "-T${CMAKE_SOURCE_DIR}/linker.ld")
+target_include_directories(kernel PUBLIC ${CMAKE_SOURCE_DIR}/include)

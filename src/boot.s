@@ -1,4 +1,4 @@
-.include "../src/print_string.s"
+.include "../src/io.s"
 .include "../src/context_switch.s"
 
 .section .text.init
