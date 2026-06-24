@@ -18,23 +18,6 @@ worker_task()
 
 int main(void)
 {
-    __asm__(
-        "addi sp, sp, -52\n"
-        "sw x0, 48(sp)\n"
-        "sw x0, 44(sp)\n"
-        "sw x0, 40(sp)\n"
-        "sw x0, 36(sp)\n"
-        "sw x0, 32(sp)\n"
-        "sw x0, 28(sp)\n"
-        "sw x0, 24(sp)\n"
-        "sw x0, 20(sp)\n"
-        "sw x0, 16(sp)\n"
-        "sw x0, 12(sp)\n"
-        "sw x0, 8(sp)\n"
-        "sw x0, 4(sp)\n"
-        "sw ra, 0(s0)\n"
-    );
-
     print_string("main: switching INTO worker task...\n");
     context_switch(&kernel_stack_pointer, worker_stack_pointer);
     print_string("main: ...back from task. done\n");
