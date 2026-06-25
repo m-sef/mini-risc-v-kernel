@@ -27,7 +27,7 @@ init_stack_pointers()
     stack_ptr = (uint32_t*)(worker_stack + STACK_SIZE);
     worker_stack_ptr = (uint32_t)stack_ptr;
 
-    *((uint32_t*)((uint8_t*)worker_stack + 1020)) = (uint32_t)&worker_task;
+    *((uint32_t*)worker_stack) = (uint32_t)&worker_task;
 }
 
 int main(void)
@@ -40,9 +40,19 @@ int main(void)
     print_string("Dumping worker stack\n");
     dump_buffer(worker_stack, STACK_SIZE);
 
-    print_string("Switching into worker task...");
-    context_switch(&kernel_stack_ptr, worker_stack_ptr);
-    print_string("... returning from worker task");
+    __asm__ volatile ( 
+        "lw a0, 0(%[input])\n"
+        "call print_word"
+        : 
+        : [input] "r" (worker_stack)
+        : "a0"
+    );
+
+    print_string("Switching into worker task...\n");
+    context_switch(&kernel_stack_ptr, (uint32_t)worker_stack);
+    print_string("... returning from worker task\n");
+
+    print_string("Is everything in working condition?\n");
 
     return 0;
 }

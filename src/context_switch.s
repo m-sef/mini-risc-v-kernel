@@ -22,8 +22,8 @@ context_switch:
     sw s0, 4(sp)
     sw ra, 0(sp)
 
-    mv a0, ra
-    call print_word
+    #mv a0, ra
+    #call print_word
 
     sw sp, 0(a0)
 
@@ -43,7 +43,7 @@ context_switch:
     lw s0, 4(sp)
     lw ra, 0(sp)
 
-    mv a0, ra
-    call print_word
+    #mv a0, ra
+    #call print_word
 
     ret
