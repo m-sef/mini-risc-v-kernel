@@ -1,4 +1,4 @@
-.section .test.context_switch
+.section .text.context_switch
 .global context_switch
 #==============================================================================
 context_switch:
@@ -7,7 +7,7 @@ context_switch:
 #          a1 - New stack pointer
 # Returns: Nothing
 #==============================================================================
-    addi sp, sp, -52 # Grow stack by 13 * 4 bytes
+    addi sp, sp, -52
     sw s11, 48(sp)
     sw s10, 44(sp)
     sw s9, 40(sp)
@@ -21,6 +21,9 @@ context_switch:
     sw s1, 8(sp)
     sw s0, 4(sp)
     sw ra, 0(sp)
+
+    mv a0, ra
+    call print_word
 
     sw sp, 0(a0)
 
@@ -39,5 +42,8 @@ context_switch:
     lw s1, 8(sp)
     lw s0, 4(sp)
     lw ra, 0(sp)
+
+    mv a0, ra
+    call print_word
 
     ret

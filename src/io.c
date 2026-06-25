@@ -64,3 +64,27 @@ print_string(
         ptr++;
     }
 }
+
+void dump_buffer(
+        const uint8_t* buffer,
+        size_t size)
+{
+    size_t i = 0;
+
+    while (i < size)
+    {
+        print_string("0x");
+        print_word(buffer + i);
+        print_char(' ');
+
+        for (size_t j = 0; j < 16; j++)
+        {
+            print_byte(buffer[i]);
+            print_char(' ');
+
+            i++;
+        }
+
+        print_char('\n');
+    }
+}

@@ -2,42 +2,47 @@
 
 #include "io.h"
 
-extern void context_switch(uint32_t* old_stack_pointer, uint32_t new_stack_pointer);
+extern void context_switch(uint32_t* old_stack_ptr, uint32_t new_stack_ptr);
 
-uint32_t kernel_stack_pointer;
-uint32_t worker_stack_pointer;
+uint32_t kernel_stack_ptr;
+uint32_t worker_stack_ptr;
 
 #define STACK_SIZE 1024
-uint8_t worker_stack[STACK_SIZE] __attribute__((aligned(16)));
+uint8_t kernel_stack[STACK_SIZE] __attribute__((aligned(16))) = {0x00};
+uint8_t worker_stack[STACK_SIZE] __attribute__((aligned(16))) = {0x00};
 
 static void
 worker_task()
 {
     print_string("Vile Machinations!\n");
-    context_switch(&worker_stack_pointer, kernel_stack_pointer);
+    context_switch(&worker_stack_ptr, kernel_stack_ptr);
+}
+
+static inline void
+init_stack_pointers()
+{
+    uint32_t* stack_ptr = (uint32_t*)(kernel_stack + STACK_SIZE);
+    kernel_stack_ptr = (uint32_t)stack_ptr;
+
+    stack_ptr = (uint32_t*)(worker_stack + STACK_SIZE);
+    worker_stack_ptr = (uint32_t)stack_ptr;
+
+    *((uint32_t*)((uint8_t*)worker_stack + 1020)) = (uint32_t)&worker_task;
 }
 
 int main(void)
 {
-    print_string("god@device:~> Mini Kernel v0.0.0\n");
-    print_string("usr@device:~> ");
+    init_stack_pointers();
 
-    char ch = 0x00;
-    while (ch != 0x03)
-    {
-        ch = read_char();
+    print_string("Dumping kernel stack\n");
+    dump_buffer(kernel_stack, STACK_SIZE);
 
-        if (ch == 0x0D)
-        {
-            print_string("\nusr@device:~> ");
-            continue;
-        }
+    print_string("Dumping worker stack\n");
+    dump_buffer(worker_stack, STACK_SIZE);
 
-        print_char(ch);
-    }
-
-    //context_switch(&kernel_stack_pointer, worker_stack_pointer);
-    //print_string("main: ...back from task. done\n");
+    print_string("Switching into worker task...");
+    context_switch(&kernel_stack_ptr, worker_stack_ptr);
+    print_string("... returning from worker task");
 
     return 0;
 }
