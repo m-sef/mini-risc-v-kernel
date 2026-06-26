@@ -48,7 +48,13 @@ void
 print_uint(
         uint32_t word)
 {
+    uint32_t temp = word;
 
+    while (temp > 0)
+    {
+        UART_WRITE(dec_ascii_lookup[temp % 10]);
+        temp /= 10;
+    }
 }
 
 void

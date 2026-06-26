@@ -1,6 +1,8 @@
 #include <stdint.h>
 
 #include "io.h"
+#include "process_control_block.h"
+#include "physical_memory.h"
 
 extern void context_switch(uint32_t* old_stack_ptr, uint32_t new_stack_ptr);
 
@@ -32,27 +34,13 @@ init_stack_pointers()
 
 int main(void)
 {
-    init_stack_pointers();
-
-    print_string("Dumping kernel stack\n");
+    struct memory_block* ptr = (struct memory_block*)kernel_stack;
+    ptr->in_use = true;
+    ptr->end_of_memory = true;
+    ptr->size = 0xFF00;
+    ptr->next_block = (struct memory_block*)kernel_stack + ptr->size;
+    
     dump_buffer(kernel_stack, STACK_SIZE);
-
-    print_string("Dumping worker stack\n");
-    dump_buffer(worker_stack, STACK_SIZE);
-
-    __asm__ volatile ( 
-        "lw a0, 0(%[input])\n"
-        "call print_word"
-        : 
-        : [input] "r" (worker_stack)
-        : "a0"
-    );
-
-    print_string("Switching into worker task...\n");
-    context_switch(&kernel_stack_ptr, (uint32_t)worker_stack);
-    print_string("... returning from worker task\n");
-
-    print_string("Is everything in working condition?\n");
 
     return 0;
 }
