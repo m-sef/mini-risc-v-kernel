@@ -15,6 +15,6 @@ void print_string(const char* buffer);
 
 void dump_buffer(const uint8_t* buffer, size_t size);
 
-#
-
+void copy_buffer(const void* source, size_t source_size,
+                 void* destination, size_t destination_size);
 #endif

@@ -1,8 +1,7 @@
 #include <stdint.h>
 
 #include "io.h"
-#include "process_control_block.h"
-#include "physical_memory.h"
+#include "memory/permanent_allocator.h"
 
 extern void context_switch(uint32_t* old_stack_ptr, uint32_t new_stack_ptr);
 
@@ -34,12 +33,10 @@ init_stack_pointers()
 
 int main(void)
 {
-    struct memory_block* ptr = (struct memory_block*)kernel_stack;
-    ptr->in_use = true;
-    ptr->end_of_memory = true;
-    ptr->size = 0xFF00;
-    ptr->next_block = (struct memory_block*)kernel_stack + ptr->size;
-    
+    init_permanent_allocator(kernel_stack, STACK_SIZE);
+    char* buffer = allocate_permanent_buffer(STACK_SIZE);
+    copy_buffer("Vile Machinations!\n", 20, buffer, 64);
+
     dump_buffer(kernel_stack, STACK_SIZE);
 
     return 0;

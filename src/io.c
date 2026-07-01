@@ -85,12 +85,46 @@ void dump_buffer(
 
         for (size_t j = 0; j < 16; j++)
         {
-            print_byte(buffer[i]);
+            print_byte(buffer[i + j]);
             print_char(' ');
-
-            i++;
         }
 
+        for (size_t j = 0; j < 16; j++)
+        {
+            switch (buffer[i + j])
+            {
+            case 0x00:
+                print_char('.');
+                continue;
+            case '\r':
+                print_char(' ');
+                continue;
+            case '\n':
+                print_char(' ');
+                continue;
+            }
+
+            print_char(buffer[i + j]);
+        }
+
+        i += 16;
+
         print_char('\n');
+    }
+}
+
+void copy_buffer(
+        const void* source,
+        size_t source_size,
+        void* destination,
+        size_t destination_size)
+{
+    size_t i = 0;
+
+    while ((i < source_size) && (i < destination_size))
+    {
+        ((uint8_t*)destination)[i] = ((uint8_t*)source)[i];
+
+        i++;
     }
 }
